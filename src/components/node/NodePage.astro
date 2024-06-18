@@ -1,0 +1,26 @@
+---
+import { type FragmentOf, readFragment } from "gql.tada";
+import { NodePageFragment } from "~/graphql/fragments/node";
+import Component from "~/components/helpers/ComponentResolver.astro";
+import Title from "../field/Title.astro";
+
+type Props = {
+  node: typeof NodePageFragment;
+  environment?: string;
+};
+
+const { node, environment } = Astro.props;
+
+const nodePage = readFragment(NodePageFragment, node as any);
+
+const showTitle = nodePage.showTitle;
+const title = nodePage.title;
+const components = nodePage.components;
+---
+
+{showTitle && <Title>{title}</Title>}
+{
+  components?.map((component) => (
+    <Component data={component as any} environment={environment} />
+  ))
+}

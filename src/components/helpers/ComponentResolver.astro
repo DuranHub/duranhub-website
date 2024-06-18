@@ -1,0 +1,48 @@
+---
+import { readFragment, type FragmentOf } from "gql.tada";
+import type { AstroComponentFactory } from "astro/runtime/server/index.js";
+
+import { ParagraphUnionFragment } from "~/graphql/fragments/paragraph";
+import ParagraphHeroCta from "../paragraph/ParagraphHeroCta.astro";
+import ParagraphHeroText from "../paragraph/ParagraphHeroText.astro";
+import UnknownComponent from "./unknownComponent.astro";
+import ParagraphText from "../paragraph/ParagraphText.astro";
+import ParagraphImage from "../paragraph/ParagraphImage.astro";
+import ParagraphStaticComponent from "../paragraph/ParagraphStaticComponent.astro";
+import ParagraphViewReference from "../paragraph/ParagraphViewReference.astro";
+import VisualEditorComponentContainer from "./VisualEditorComponentContainer.astro";
+
+interface Props {
+  data: FragmentOf<typeof ParagraphUnionFragment>;
+  environment?: string;
+}
+
+const { data, environment } = Astro.props;
+
+const components = new Map<string, AstroComponentFactory>([
+  ["ParagraphHeroCta", ParagraphHeroCta],
+  ["ParagraphHeroText", ParagraphHeroText],
+  ["ParagraphText", ParagraphText],
+  ["ParagraphImage", ParagraphImage],
+  ["ParagraphStaticComponent", ParagraphStaticComponent],
+  ["ParagraphViewReference", ParagraphViewReference],
+]);
+
+const paragraph = readFragment(ParagraphUnionFragment, data);
+
+const Component = components.get(paragraph.__typename) || UnknownComponent;
+---
+
+{
+  environment === "preview" ? (
+    <VisualEditorComponentContainer
+      action="edit"
+      storage="paragraph"
+      uuid={paragraph.id}
+    >
+      <Component paragraph={paragraph} />
+    </VisualEditorComponentContainer>
+  ) : (
+    <Component paragraph={paragraph} />
+  )
+}

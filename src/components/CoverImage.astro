@@ -1,0 +1,55 @@
+---
+import { type FragmentOf, readFragment } from "gql.tada";
+import { ImageFragment, MediaImageFragment } from "~/graphql/fragments/media";
+
+interface Props {
+  title: string;
+  path: string;
+  image: FragmentOf<typeof MediaImageFragment>;
+  width: number;
+  height: number;
+  styleName: string;
+}
+
+const { title, path, image, width, height, styleName } = Astro.props;
+
+const mediaImageFragment = readFragment(MediaImageFragment, image);
+const imageFragment = mediaImageFragment
+  ? readFragment(ImageFragment, mediaImageFragment.mediaImage)
+  : null;
+const imageUrl = imageFragment ? imageFragment.url : "";
+---
+
+<div class="-mx-5 sm:mx-0">
+  {
+    path ? (
+      <a href={path} aria-label={title}>
+        <img
+          src={imageUrl}
+          alt={`Teaser for ${title}`}
+          width={width}
+          height={height}
+          style={{
+            backgroundSize: "cover",
+            backgroundColor: "#eee",
+            width: "100%",
+            height: "auto",
+          }}
+        />
+      </a>
+    ) : (
+      <img
+        src={imageUrl}
+        alt={`Teaser for ${title}`}
+        width={width}
+        height={height}
+        style={{
+          backgroundSize: "cover",
+          backgroundColor: "#eee",
+          width: "100%",
+          height: "auto",
+        }}
+      />
+    )
+  }
+</div>

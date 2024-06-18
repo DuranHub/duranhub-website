@@ -1,0 +1,45 @@
+---
+import { type FragmentOf, readFragment } from "gql.tada";
+import { ImageFragment, MediaImageFragment } from "~/graphql/fragments/media";
+import { UserFragment } from "~/graphql/fragments/user";
+import Title from "./field/Title.astro";
+import Avatar from "./Avatar.astro";
+
+interface Props {
+  title: string;
+  image: FragmentOf<typeof MediaImageFragment>;
+  author: FragmentOf<typeof UserFragment> | null;
+}
+
+const { title, image, author } = Astro.props;
+
+const authorFragment = readFragment(UserFragment, author);
+const pictureFragment = authorFragment
+  ? readFragment(MediaImageFragment, authorFragment.picture)
+  : null;
+const authorName = authorFragment ? authorFragment.name : "";
+const authorPicture = pictureFragment?.mediaImage;
+const imageUrl = readFragment(MediaImageFragment, image);
+const Image = readFragment(ImageFragment, imageUrl.mediaImage);
+---
+
+<div class="prose prose-lg max-w-6xl mx-auto">
+  <Title>{title}</Title>
+  <div class="mb-8 -mx-5 sm:mx-0">
+    <img
+      src={Image.url}
+      alt={`Cover Image for ${title}`}
+      width={1280}
+      height={960}
+      style={{
+        backgroundSize: "cover",
+        backgroundColor: "#eee",
+        width: "100%",
+        height: "auto",
+      }}
+    />
+  </div>
+  <div class="md:block">
+    <Avatar name={authorName} picture={authorPicture} />
+  </div>
+</div>

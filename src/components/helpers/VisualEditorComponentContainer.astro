@@ -1,0 +1,55 @@
+---
+import type { VisualEditorComponentProps } from "drupal-visual-editor";
+
+interface Props extends VisualEditorComponentProps {}
+const { action, storage, uuid } = Astro.props;
+---
+
+<visual-editor
+  id={`${storage}-${uuid}`}
+  data-visual-editor-component={`${storage}-${uuid}`}
+  data-action={action}
+  data-storage={storage}
+  data-uuid={uuid}
+>
+  <slot />
+</visual-editor>
+
+<script>
+  import { openVisualEditorComponent } from "drupal-visual-editor";
+  import type { VisualEditorComponentProps } from "drupal-visual-editor";
+
+  class VisualEditor extends HTMLElement {
+    private storage: VisualEditorComponentProps["storage"];
+    private uuid: VisualEditorComponentProps["uuid"];
+    private action: VisualEditorComponentProps["action"];
+
+    constructor() {
+      super();
+      this.storage = this.getAttribute("data-storage") as "paragraph";
+      this.uuid = this.getAttribute("data-uuid") as string;
+      this.action = this.getAttribute("data-action") as "edit";
+
+      this.addEventListener("click", () => {
+        openVisualEditorComponent({
+          action: this.action,
+          storage: this.storage,
+          uuid: this.uuid,
+        });
+      });
+    }
+  }
+
+  customElements.define("visual-editor", VisualEditor);
+</script>
+
+<style scoped>
+  visual-editor:hover {
+    display: block;
+    border-color: purple;
+    border-style: dashed;
+    border-width: thin;
+    overflow: hidden;
+    cursor: pointer;
+  }
+</style>

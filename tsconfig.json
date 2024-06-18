@@ -1,0 +1,22 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "plugins": [
+      {
+        "name": "@0no-co/graphqlsp",
+        "schema": "./src/graphql/schema.graphql",
+        "tadaOutputLocation": "./app/graphql/gql.tada.instrospection.ts",
+        "trackFieldUsage": false,
+        "shouldCheckForColocatedFragments": false
+      }
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "~/*": [
+        "./src/*"
+      ]
+    },
+    "jsx": "react-jsx",
+    "jsxImportSource": "react"
+  }
+}

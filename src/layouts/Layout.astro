@@ -1,0 +1,45 @@
+---
+import Container from "~/components/Container.astro";
+import Footer from "~/components/Footer.astro";
+import Header from "~/components/Header.astro";
+import { ViewTransitions } from "astro:transitions";
+
+interface Props {
+  title: string;
+  menu: {
+    items: {
+      title: string;
+      url: string | null;
+    }[]
+  }
+}
+
+const { title, menu } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Astro description" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <ViewTransitions />
+  </head>
+  <body>
+    <Container>
+      <Header menu={menu} />
+      <slot />
+      <Footer />
+    </Container>
+    <script>
+      import { syncDrupalPreviewRoutes } from "drupal-decoupled";
+
+      document.addEventListener("astro:before-preparation", (ev) => {
+        syncDrupalPreviewRoutes(ev.to.pathname);
+      });
+    </script>
+  </body>
+</html>

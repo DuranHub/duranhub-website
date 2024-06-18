@@ -1,0 +1,21 @@
+---
+import { type FragmentOf, readFragment } from "gql.tada";
+import {
+  NodeArticleFragment,
+  NodeArticleTeaserFragment,
+} from "~/graphql/fragments/node";
+import NodeArticleTeaser from "../node/NodeArticleTeaser.astro";
+
+interface Props {
+  results: Array<FragmentOf<typeof NodeArticleTeaserFragment>>;
+}
+
+const { results } = Astro.props;
+---
+
+{
+  results.map((result) => {
+    const node = readFragment(NodeArticleFragment, result);
+    return <NodeArticleTeaser node={node} />;
+  })
+}

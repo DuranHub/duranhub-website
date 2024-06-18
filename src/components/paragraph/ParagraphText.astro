@@ -1,0 +1,27 @@
+---
+import { readFragment, type FragmentOf } from "gql.tada";
+import { TextFragment } from "~/graphql/fragments/misc";
+import { ParagraphTextFragment } from "~/graphql/fragments/paragraph";
+
+interface Props {
+  paragraph: FragmentOf<typeof ParagraphTextFragment>;
+}
+
+const { paragraph } = Astro.props;
+const { title, textRich } = readFragment(ParagraphTextFragment, paragraph);
+const textFragment = readFragment(TextFragment, textRich);
+
+const textHtml = textFragment.value ?? "";
+---
+
+<div class="py-16 bg-white">
+  <h1
+    class="mt-2 block text-4xl text-center leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl"
+  >
+    {title}
+  </h1>
+  <div
+    class="mt-6 text-2xl prose prose-purple max-w-6xl mx-auto"
+    set:html={textHtml}
+  />
+</div>

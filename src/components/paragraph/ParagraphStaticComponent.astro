@@ -1,0 +1,24 @@
+---
+import { readFragment, type FragmentOf } from "gql.tada";
+import { ParagraphStaticComponentFragment } from "~/graphql/fragments/paragraph";
+
+interface Props {
+  paragraph: FragmentOf<typeof ParagraphStaticComponentFragment>;
+}
+
+let { paragraph } = Astro.props;
+const { id, component } = readFragment(
+  ParagraphStaticComponentFragment,
+  paragraph
+);
+
+// @todo: Implement Contact component
+const componentMap = {
+  contact: "Contact",
+};
+---
+
+<p>
+  <h2>ParagraphStaticComponent</h2>
+  <pre>{JSON.stringify({ id, component, componentMap }, null, 2)}</pre>
+</p>

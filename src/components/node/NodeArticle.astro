@@ -1,0 +1,22 @@
+---
+import { type FragmentOf, readFragment } from "gql.tada";
+import { NodeArticleFragment } from "~/graphql/fragments/node";
+import Component from "~/components/helpers/ComponentResolver.astro";
+import Cover from "../Cover.astro";
+
+interface Props {
+  node: FragmentOf<typeof NodeArticleFragment>;
+}
+
+const { node } = Astro.props;
+
+const nodeArticle = readFragment(NodeArticleFragment, node);
+const components = nodeArticle.components;
+---
+
+<Cover
+  title={nodeArticle.title}
+  image={nodeArticle.image}
+  author={nodeArticle.author}
+/>
+{components?.map((component) => <Component data={component as any} />)}

@@ -1,0 +1,27 @@
+---
+import { readFragment, type FragmentOf } from "gql.tada";
+import { ImageFragment } from "~/graphql/fragments/media";
+
+interface Props {
+  name?: string;
+  picture?: FragmentOf<typeof ImageFragment>;
+}
+
+const { name, picture } = Astro.props;
+const imageFragment = readFragment(ImageFragment, picture);
+---
+
+<div class="flex items-center">
+  {
+    imageFragment && (
+      <img
+        src={imageFragment.url}
+        class="w-12 h-12 rounded-full mr-4"
+        alt={`Avatar of ${name}`}
+        width={48}
+        height={48}
+      />
+    )
+  }
+  <div class="text-xl font-bold">{name}</div>
+</div>

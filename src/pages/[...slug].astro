@@ -1,0 +1,83 @@
+---
+import { graphql } from "~/graphql/gql.tada";
+import Layout from "../layouts/Layout.astro";
+import { getClient } from "~/utils/client";
+import {
+  NodeArticleFragment,
+  NodePageFragment,
+} from "~/graphql/fragments/node";
+import type { FragmentOf } from "gql.tada";
+import NodePage from "~/components/node/NodePage.astro";
+import NodeArticle from "~/components/node/NodeArticle.astro";
+import { calculatePath } from "~/utils/routes";
+
+const { slug } = Astro.params;
+
+const client = await getClient({
+  url: import.meta.env.DRUPAL_GRAPHQL_URI,
+  auth: {
+    clientId: import.meta.env.DRUPAL_CLIENT_ID,
+    clientSecret: import.meta.env.DRUPAL_CLIENT_SECRET,
+    uri: import.meta.env.DRUPAL_AUTH_URI,
+  },
+});
+
+const nodeRouteQuery = graphql(
+  `
+    query route($path: String!) {
+      route(path: $path) {
+        __typename
+        ... on RouteInternal {
+          entity {
+            __typename
+            ... on NodePage {
+              id
+              title
+            }
+            ...NodePageFragment
+            ...NodeArticleFragment
+          }
+        }
+      }
+      menu(name: HEADER) {
+        items {
+          title
+          url
+        }
+      }
+    }
+  `,
+  [NodePageFragment, NodeArticleFragment]
+);
+
+const path = calculatePath({
+  path: !slug ? "/" : slug,
+  url: Astro.url,
+});
+
+const { data, error } = await client.query(nodeRouteQuery, {
+  path,
+});
+
+if (
+  error ||
+  !data ||
+  data?.route === null ||
+  data?.route.__typename !== "RouteInternal" ||
+  !data.route.entity
+) {
+  return Astro.redirect("/404");
+}
+const type = data.route.entity.__typename;
+const node = data.route.entity as
+  | FragmentOf<typeof NodePageFragment>
+  | FragmentOf<typeof NodeArticleFragment>;
+const menu = data.menu || { items: [] };
+---
+
+<Layout title="Welcome to Astro." menu={menu}>
+  <main transition:animate="fade">
+    {type === "NodePage" && <NodePage node={node as any} />}
+    {type == "NodeArticle" && <NodeArticle node={node as any} />}
+  </main>
+</Layout>

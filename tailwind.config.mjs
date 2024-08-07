@@ -4,6 +4,34 @@ export default {
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
 	theme: {
 		extend: {
+			colors: {
+				primary: {
+					50: '#ffeff1',
+					100: '#ffe0e6',
+					200: '#ffc6d3',
+					300: '#ff97ae',
+					400: '#ff5d84',
+					500: '#ff245f',
+					600: '#ff004e',
+					700: '#d70042',
+					800: '#b40040',
+					900: '#99023d',
+					950: '#57001c',
+				},
+				secondary: {
+					50: '#f5f6fa',
+					100: '#ebedf3',
+					200: '#d2d9e5',
+					300: '#aab6cf',
+					400: '#7c90b4',
+					500: '#5b729c',
+					600: '#485b81',
+					700: '#3b4969',
+					800: '#344058',
+					900: '#272e3f',
+					950: '#1f2432',
+				},
+			},
 			typography: ({ theme }) => ({
 				'pinky-winky': {
 					css: {

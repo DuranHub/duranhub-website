@@ -39,12 +39,7 @@ const nodeRouteQuery = graphql(
           }
         }
       }
-      menu(name: HEADER) {
-        items {
-          title
-          url
-        }
-      }
+      
     }
   `,
   [NodePageFragment, NodeArticleFragment]
@@ -72,10 +67,10 @@ const type = data.route.entity.__typename;
 const node = data.route.entity as
   | FragmentOf<typeof NodePageFragment>
   | FragmentOf<typeof NodeArticleFragment>;
-const menu = data.menu || { items: [] };
+
 ---
 
-<Layout title="Welcome to Astro." menu={menu}>
+<Layout title="Welcome to Astro." >
   <main transition:animate="fade">
     {type === "NodePage" && <NodePage node={node as any} />}
     {type == "NodeArticle" && <NodeArticle node={node as any} />}

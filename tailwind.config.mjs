@@ -6,7 +6,7 @@ export default {
 	theme: {
 		extend: {
 			fontFamily: {
-				serif: ['Montserrat', ...defaultTheme.fontFamily.serif],
+				sans: ['Montserrat', ...defaultTheme.fontFamily.sans],
 			},
 			typography: ({ theme }) => ({
 				'pinky-winky': {

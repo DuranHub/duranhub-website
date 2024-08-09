@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+const defaultTheme = require("tailwindcss/defaultTheme")
+
 export default {
 	darkMode: "class",
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
@@ -32,7 +34,9 @@ export default {
 			},
 		},
 		extend: {
-			
+      fontFamily: {
+				sans: ['Montserrat', ...defaultTheme.fontFamily.sans],
+			},
 			typography: ({ theme }) => ({
 				'pinky-winky': {
 					css: {
